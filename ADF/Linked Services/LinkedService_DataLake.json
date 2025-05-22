@@ -1,0 +1,16 @@
+{
+    "name": "DataPlatform_DataLake",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "parameters": {
+            "env": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "type": "AzureBlobFS",
+        "typeProperties": {
+            "url": "@{concat('https://sa', linkedService().env, 'dplake.dfs.core.windows.net')}"
+        }
+    }
+}

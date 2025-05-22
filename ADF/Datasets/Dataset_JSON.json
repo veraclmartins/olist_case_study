@@ -1,0 +1,49 @@
+{
+    "name": "JSON_file",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "DataLake_ED_DP",
+            "type": "LinkedServiceReference",
+            "parameters": {
+                "env": {
+                    "value": "@dataset().env",
+                    "type": "Expression"
+                }
+            }
+        },
+        "parameters": {
+            "ContainerName": {
+                "type": "string"
+            },
+            "FolderName": {
+                "type": "string"
+            },
+            "FileName": {
+                "type": "string"
+            },
+            "env": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "type": "Json",
+        "typeProperties": {
+            "location": {
+                "type": "AzureBlobFSLocation",
+                "fileName": {
+                    "value": "@dataset().FileName",
+                    "type": "Expression"
+                },
+                "folderPath": {
+                    "value": "@dataset().FolderName",
+                    "type": "Expression"
+                },
+                "fileSystem": {
+                    "value": "@dataset().ContainerName",
+                    "type": "Expression"
+                }
+            }
+        },
+        "schema": {}
+    }
+}

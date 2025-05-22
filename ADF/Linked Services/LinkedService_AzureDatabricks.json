@@ -1,0 +1,13 @@
+{
+    "name": "DataPlatform_Databricks",
+    "properties": {
+        "annotations": [],
+        "type": "AzureDatabricks",
+        "typeProperties": {
+            "domain": "https://adb-87801124834023.13.azuredatabricks.net",
+            "authentication": "MSI",
+            "workspaceResourceId": "/subscriptions/<subscription>/resourceGroups/<resourceGroup>/providers/Microsoft.Databricks/workspaces/adb-dev-dp",
+            "existingClusterId": "0305-151639-8ndlq4p9"
+        }
+    }
+}

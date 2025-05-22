@@ -1,0 +1,269 @@
+{
+    "name": "Silver2Gold",
+    "properties": {
+        "activities": [
+            {
+                "name": "Get Dimensions configurations",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "Set current date",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "BlobSource",
+                            "recursive": true,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "JSON_file",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ContainerName": {
+                                "value": "@variables('ConfigContainer')",
+                                "type": "Expression"
+                            },
+                            "FolderName": {
+                                "value": "@variables('ConfigFolder')",
+                                "type": "Expression"
+                            },
+                            "FileName": {
+                                "value": "@variables('ConfigFile_dims')",
+                                "type": "Expression"
+                            },
+                            "env": {
+                                "value": "@pipeline().globalParameters.env",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "Set current date",
+                "type": "SetVariable",
+                "dependsOn": [],
+                "policy": {
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "variableName": "ExecutionDate",
+                    "value": {
+                        "value": "@utcnow('yyyy-MM-dd')",
+                        "type": "Expression"
+                    }
+                }
+            },
+            {
+                "name": "ForEach dims configuration execute notebook",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Get Dimensions configurations",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Get Dimensions configurations').output.value",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Load data to dimensions",
+                            "type": "DatabricksNotebook",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "notebookPath": {
+                                    "value": "@variables('GoldNotebookPath')",
+                                    "type": "Expression"
+                                },
+                                "baseParameters": {
+                                    "currentDate": {
+                                        "value": "@variables('ExecutionDate')",
+                                        "type": "Expression"
+                                    },
+                                    "table_name": {
+                                        "value": "@item().table_name",
+                                        "type": "Expression"
+                                    }
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "DataPlatform_Databricks",
+                                "type": "LinkedServiceReference"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Get Facts configurations",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "BlobSource",
+                            "recursive": true,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "JSON_file",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ContainerName": {
+                                "value": "@variables('ConfigContainer')",
+                                "type": "Expression"
+                            },
+                            "FolderName": {
+                                "value": "@variables('ConfigFolder')",
+                                "type": "Expression"
+                            },
+                            "FileName": {
+                                "value": "@variables('ConfigFile_facts')",
+                                "type": "Expression"
+                            },
+                            "env": {
+                                "value": "@pipeline().globalParameters.env",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach facts configuration execute notebook",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Get Facts configurations",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "ForEach dims configuration execute notebook",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Get Facts configurations').output.value",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Load data to facts",
+                            "type": "DatabricksNotebook",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "notebookPath": {
+                                    "value": "@variables('GoldNotebookPath')",
+                                    "type": "Expression"
+                                },
+                                "baseParameters": {
+                                    "currentDate": {
+                                        "value": "@variables('ExecutionDate')",
+                                        "type": "Expression"
+                                    },
+                                    "table_name": {
+                                        "value": "@item().table_name",
+                                        "type": "Expression"
+                                    }
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "DataPlatform_Databricks",
+                                "type": "LinkedServiceReference"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "variables": {
+            "ExecutionDate": {
+                "type": "String"
+            },
+            "ConfigContainer": {
+                "type": "String",
+                "defaultValue": "config"
+            },
+            "ConfigFolder": {
+                "type": "String",
+                "defaultValue": "json"
+            },
+            "ConfigFile_dims": {
+                "type": "String",
+                "defaultValue": "LoadToGold_dimensions.json"
+            },
+            "GoldNotebookPath": {
+                "type": "String",
+                "defaultValue": "gold/SilverToGold"
+            },
+            "ConfigFile_facts": {
+                "type": "String",
+                "defaultValue": "LoadToGold_fatcs.json"
+            }
+        },
+        "annotations": []
+    }
+}

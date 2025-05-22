@@ -1,0 +1,142 @@
+{
+    "name": "Bronze2Silver",
+    "properties": {
+        "activities": [
+            {
+                "name": "Get Silver configurations",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "Set current date",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "BlobSource",
+                            "recursive": true,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "JSON_file",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ContainerName": {
+                                "value": "@variables('ConfigContainer')",
+                                "type": "Expression"
+                            },
+                            "FolderName": {
+                                "value": "@variables('ConfigFolder')",
+                                "type": "Expression"
+                            },
+                            "FileName": {
+                                "value": "@variables('ConfigFile')",
+                                "type": "Expression"
+                            },
+                            "env": {
+                                "value": "@pipeline().globalParameters.env",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "Set current date",
+                "type": "SetVariable",
+                "dependsOn": [],
+                "policy": {
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "variableName": "ExecutionDate",
+                    "value": {
+                        "value": "@utcnow('yyyy-MM-dd')",
+                        "type": "Expression"
+                    }
+                }
+            },
+            {
+                "name": "ForEach silver configuration execute notebook",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Get Silver configurations",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Get Silver configurations').output.value",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Load data to Silver",
+                            "type": "DatabricksNotebook",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "notebookPath": {
+                                    "value": "@concat('silver/', item().notebook_path, item().table_name)",
+                                    "type": "Expression"
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "DataPlatform_Databricks",
+                                "type": "LinkedServiceReference"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "variables": {
+            "ExecutionDate": {
+                "type": "String"
+            },
+            "ConfigContainer": {
+                "type": "String",
+                "defaultValue": "config"
+            },
+            "ConfigFolder": {
+                "type": "String",
+                "defaultValue": "json"
+            },
+            "ConfigFile": {
+                "type": "String",
+                "defaultValue": "LoadToSilver.json"
+            }
+        },
+        "annotations": []
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "notebook_path":"olist/",
+    "table_name":"geolocation"
+}
+{
+    "notebook_path":"olist/",
+    "table_name":"order_items"
+}
+{
+    "notebook_path":"olist/",
+    "table_name":"orders"
+}
+{
+    "notebook_path":"olist/",
+    "table_name":"products"
+}
+{
+    "notebook_path":"olist/",
+    "table_name":"sellers"
+}
+{
+    "notebook_path":"olist/",
+    "table_name":"customers"
+}
+{
+    "notebook_path":"olist/",
+    "table_name":"product_category_name_translation"
+}

@@ -1,0 +1,54 @@
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_geolocation_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"geolocation"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_order_items_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"order_items"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_order_payments_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"order_payments"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_order_reviews_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"order_reviews"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_orders_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"orders"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_products_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"products"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_sellers_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"sellers"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"olist_customers_dataset.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"customers"
+}
+{
+    "source_path":"landing/olist/",
+    "source_name":"product_category_name_translation.csv",
+    "target_path":"bronze/olist/",
+    "target_name":"product_category_name_translation"
+}

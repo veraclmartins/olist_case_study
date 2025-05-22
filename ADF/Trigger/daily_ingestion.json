@@ -1,0 +1,17 @@
+{
+    "name": "daily_ingestion",
+    "properties": {
+        "annotations": [],
+        "runtimeState": "Stopped",
+        "pipelines": ["Load_olist"],
+        "type": "ScheduleTrigger",
+        "typeProperties": {
+            "recurrence": {
+                "frequency": "Day",
+                "interval": 1,
+                "startTime": "2024-03-09T09:24:00",
+                "timeZone": "GMT Standard Time"
+            }
+        }
+    }
+}

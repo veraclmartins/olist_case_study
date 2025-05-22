@@ -1,0 +1,21 @@
+{
+    "table_name":"DIM1_geolocation"
+}
+{
+    "table_name":"DIM2_order_items"
+}
+{
+    "table_name":"DIM2_orders"
+}
+{
+    "table_name":"DIM2_products"
+}
+{
+    "table_name":"DIM2_sellers"
+}
+{
+    "table_name":"DIM2_customers"
+}
+{
+    "table_name":"DIM1_product_category_name_translation"
+}
